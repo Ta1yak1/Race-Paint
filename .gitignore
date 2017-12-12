@@ -1,0 +1,5 @@
+node_modules/
+phaser-ce/
+.DS_Store
+yarn.lock
+package-lock.json
