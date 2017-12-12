@@ -1,6 +1,4 @@
-var express = require('express');
-var app = express();
-var server = require('http').Server(app);
+
 var io = require('socket.io').listen(server);
 var bodyParser = require('body-parser');
 
@@ -24,4 +22,3 @@ io.on('connection', function (client) {
 server.listen(PORT, function(){
     console.log('Running on Port '+PORT+'...');
 });
-
