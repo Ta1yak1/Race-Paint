@@ -5,15 +5,12 @@ var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var bodyParser = require('body-parser');
 
-
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
 
 app.use(express.static("public"));
 
-var app = express();
 var PORT = process.env.PORT || 8080;
 
 
@@ -30,6 +27,7 @@ server.lastPlayerY = 200;
 // =============================================================
 io.on('connection', function (socket) {
     //handling new connection
+
     socket.on('newPlayer', function () {
         socket.player = {
             id: server.lastPlayerID++,
@@ -51,6 +49,9 @@ io.on('connection', function (socket) {
         socket.on('disconnect', function () {
             io.emit('remove', socket.player.id);
         });
+    });
+    socket.on('test', function(){
+        console.log('test recived from client.js');
     });
 });
 
