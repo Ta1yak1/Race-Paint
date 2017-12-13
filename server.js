@@ -27,6 +27,7 @@ server.lastPlayerY = 200;
 // =============================================================
 io.on('connection', function (socket) {
     //handling new connection
+
     socket.on('newPlayer', function () {
         socket.player = {
             id: server.lastPlayerID++,
@@ -48,6 +49,9 @@ io.on('connection', function (socket) {
         socket.on('disconnect', function () {
             io.emit('remove', socket.player.id);
         });
+    });
+    socket.on('test', function(){
+        console.log('test recived from client.js');
     });
 });
 
