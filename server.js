@@ -19,7 +19,7 @@ require('./routes/html-routes.js')(app);
 
 //keeping track of players
 server.lastPlayerID = 0;
-server.lastPlayerX = 200;
+server.lastPlayerX = 0;
 server.lastPlayerY = 200;
 
 
@@ -29,35 +29,60 @@ io.on('connection', function (socket) {
     //handling new connection
 
     socket.on('newPlayer', function () {
+        console.log('newplayer on server');
         socket.player = {
             id: server.lastPlayerID++,
-            x: server.lastPlayerX += 200,
-            y: server.lastPlayerY
+            x: server.lastPlayerX += 100,
+            y: server.lastPlayerY,
+            key_input: null,
+            rotating: false
         };
-        socket.emit('allPlayer', getAllPlayers()); //sends message to new client updating them with existing clients
+
+        socket.emit('allPlayers', getAllPlayers()); //sends message to new client updating them with existing clients
         socket.broadcast.emit('newPlayer', socket.player); //sends message to all clients minus existing updating about new client
 
-        //handling inputs
-        socket.on('click', function (data) {
-            console.log('click to ' + data.x + ', ' + data.y);
-            socket.player.x = data.x;
-            socket.player.y = data.y;
-            io.emit('move', socket.player);
-        });
+
 
         //handling disconnects
         socket.on('disconnect', function () {
             io.emit('remove', socket.player.id);
         });
+
     });
-    socket.on('test', function(){
+    socket.on('upKey', function () {
+        io.emit('moveUp', socket.player)
+    });
+
+    socket.on('downKey', function () {
+        io.emit('moveDown', socket.player)
+    });
+
+    socket.on('leftKey', function () {
+        socket.player.rotating = true;
+        io.emit('moveLeft', socket.player)
+    });
+
+    socket.on('rightKey', function () {
+        socket.player.rotating = true;
+        
+        io.emit('moveRight', socket.player)
+    });
+
+    socket.on('noneClick', function () {
+        if (socket.player.rotating) {
+            socket.player.rotating = false;
+            io.emit('moveNone', socket.player)
+        }
+
+    });
+    socket.on('test', function () {
         console.log('test recived from client.js');
     });
 });
 
 function getAllPlayers() {
     var players = [];
-    Objects.keys(io.sockets.connected).forEach(function (socketID) {
+    Object.keys(io.sockets.connected).forEach(function (socketID) {
         var player = io.sockets.connected[socketID].player;
         if (player) {
             players.push(player);

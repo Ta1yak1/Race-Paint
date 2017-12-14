@@ -1,9 +1,11 @@
-var Client = require('./client.js');
+
 //Setting up game
-var game = new Phaser.Game(16*32, 600, Phaser.AUTO, document.getElementById('game'));
+var game = new Phaser.Game(16 * 32, 600, Phaser.AUTO, document.getElementById('game'));
 
 
 var Game = {};
+
+var isGame = false;
 
 //
 Game.init = function () {
@@ -23,6 +25,7 @@ Game.preload = function () {
 
 //create game and setup visuals
 Game.create = function () {
+    
     Game.playerMap = {} //Used to keep track of players 
 
     // var map = game.add.tilemap('map');
@@ -33,9 +36,9 @@ Game.create = function () {
     //     layer = map.createLayer(i);
     // }
     // layer.inputEnabled = true; // Allows clicking on the map
-    Client.askNewPlayer(); //client notifies server new player
 
-    layer.events.onInputUp.add(Game.getCoordinates, this);
+
+    //layer.events.onInputUp.add(Game.getCoordinates, this);
 
     //bitmap data
 
@@ -44,61 +47,77 @@ Game.create = function () {
 
     var bg = game.add.sprite(0, 0, bmd);
 
-    player = game.add.sprite(200, 200, 'car');
-    game.physics.p2.enable(player);
-    game.physics.p2.setBoundsToWorld(true, true, true, true, false);
+    game.physics.startSystem(Phaser.Physics.P2JS);
 
-    arrowKeys = game.input.keyboard.createCursorKeys();
+    keyInput = game.input.keyboard.createCursorKeys();
+
+    Client.askNewPlayer(); //client notifies server new player
+    isGame = true;
 };
 
-function update() {
-
-    bmd.context.fillRect(player.x, player.y, 5, 5);
-    bmd.dirty = true;
-
-    if (arrowKeys.left.isDown) {
-        player.body.rotateLeft(100);
+//game updates
+Game.update = function () {
+    if (isGame){
+        if (keyInput.left.isDown) {
+            Client.sendLeft();
+        }
+        else if (keyInput.right.isDown) {
+            Client.sendRight();
+        }
+        //SERVER BREAKS WHEN SENDSTILL FOR SOME REASON
+        else {
+            Client.sendStill();
+        }
+        if (keyInput.up.isDown) {
+            Client.sendUp();
+        }
+        else if (keyInput.down.isDown) {
+            Client.sendDown();
+        }
     }
-    else if (arrowKeys.right.isDown) {
-        player.body.rotateRight(100);
-    }
-    else {
-        player.body.setZeroRotation();
-    }
-    if (arrowKeys.up.isDown) {
-        player.body.thrust(150);
-    }
-    else if (arrowKeys.down.isDown) {
-        player.body.reverse(100);
-    }
-
-
-    //add player
-    Game.addNewPlayer = function (id, x, y) {
-        Game.playerMap[id] = game.add.sprite(x, y, 'car');
-    };
-
-    //remove player 
-    Game.removePlayer = function (id) {
-        Game.playerMap[id].destroy();
-        delete Game.playerMap[id];
-    };
-
-    //sends client coordinates
-    Game.getCoordinates = function (layer, pointer) {
-        //TODO give client coordinates
-        Client.sendClick(player.x,player.y);
-    };
-
-    //move player
-    Game.movePlayer = function (id, x, y) {
-        var player = Game.playerMap[id];
-        //TODO make player move
-    };
 }
+
+
+
+//add player
+Game.addNewPlayer = function (id, x, y) {
+    Game.playerMap[id] = game.add.sprite(x, y, 'car');
+    game.physics.p2.enable(Game.playerMap[id]);
+    game.physics.p2.setBoundsToWorld(true, true, true, true, false);
+
+};
+
+//remove player 
+Game.removePlayer = function (id) {
+    Game.playerMap[id].destroy();
+    delete Game.playerMap[id];
+};
+
+Game.pressUp = function (id) {
+    player = Game.playerMap[id];
+    player.body.thrust(300);
+
+}
+Game.pressDown = function (id) {
+    player = Game.playerMap[id];
+    player.body.reverse(100);
+  
+}
+Game.pressNone = function(id){
+    player = Game.playerMap[id];
+    player.body.setZeroRotation();
+    
+}
+Game.pressLeft = function (id) {
+    player = Game.playerMap[id];
+    player.body.rotateLeft(100);
+}
+Game.pressRight = function (id) {
+    player = Game.playerMap[id];
+    player.body.rotateRight(100);
+}
+
+
 
 game.state.add('Game', Game);
 game.state.start('Game');
-
-
-module.exports = Game;
