@@ -5,7 +5,7 @@ var game = new Phaser.Game(16 * 32, 600, Phaser.AUTO, document.getElementById('g
 
 var Game = {};
 
-var isGame = false;
+var selfCreated = false;
 
 //
 Game.init = function () {
@@ -25,8 +25,8 @@ Game.preload = function () {
 
 //create game and setup visuals
 Game.create = function () {
-    
-    Game.playerMap = {} //Used to keep track of players 
+    Game.self;
+    Game.playerMap = {}; //Used to keep track of players 
 
     // var map = game.add.tilemap('map');
     // map.addTilesetImage('tilesheet', 'tileset'); // tilesheet is the key of the tileset in map's JSON file
@@ -39,8 +39,7 @@ Game.create = function () {
 
 
     //layer.events.onInputUp.add(Game.getCoordinates, this);
-    var testKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
-    testKey.onDown.add(Client.sendTest, this);
+
     //bitmap data
 
     var bmd = game.make.bitmapData(game.width, game.height)
@@ -58,21 +57,28 @@ Game.create = function () {
 
 //game updates
 Game.update = function () {
-    if (isGame){
+    if (selfCreated){
+        var MyCar = Game.self.body
+
         if (keyInput.left.isDown) {
+            MyCar.rotateLeft(100);
             Client.sendLeft();
         }
         else if (keyInput.right.isDown) {
+            MyCar.rotateRight(100);
             Client.sendRight();
         }
         //SERVER BREAKS WHEN SENDSTILL FOR SOME REASON
         else {
+            MyCar.setZeroRotation();
             Client.sendStill();
         }
         if (keyInput.up.isDown) {
+            MyCar.thrust(300);
             Client.sendUp();
         }
         else if (keyInput.down.isDown) {
+            MyCar.reverse(100);
             Client.sendDown();
         }
     }
@@ -88,6 +94,12 @@ Game.addNewPlayer = function (id, x, y) {
 
 };
 
+Game.addSelf = function (x,y){
+    Game.self = game.add.sprite(x, y, 'car');
+    game.physics.p2.enable(Game.self);
+    game.physics.p2.setBoundsToWorld(true, true, true, true, false);
+    selfCreated = true;
+}
 //remove player 
 Game.removePlayer = function (id) {
     Game.playerMap[id].destroy();

@@ -1,11 +1,21 @@
 
 var Client = {};
-Client.socket = io.connect('http://localhost:8080');
+Client.socket = io.connect();
 
 Client.askNewPlayer = function () {
-    Client.socket.emit('newPlayer');
+    Client.socket.emit('newPlayerConnect');
     console.log('askNewPlayer');
 }
+
+Client.socket.on('addSelf', function(player){
+    Game.addSelf(player.x,player.y);
+});
+
+Client.socket.on('addOthers', function(data){
+    for (var i = 0; i < data.length; i++){
+        Game.addNewPlayer(data[i].id, data[i].x, data[i].y);
+    }
+});
 
 Client.sendTest = function () {
     console.log('test sent from client.js');
@@ -14,16 +24,6 @@ Client.sendTest = function () {
 //take data from server and create Client newPlayer
 Client.socket.on('newPlayer', function (player) {
     Game.addNewPlayer(player.id, player.x, player.y);
-    console.log('adding new player');
-});
-
-//add all players for client
-Client.socket.on('allPlayers', function (data) {
-    console.log('client allplayers')
-    console.log(data);
-    for (var i = 0; i < data.length; i++) {
-        Game.addNewPlayer(data[i].id, data[i].x, data[i].y);
-    }
 });
 
 //delete player based on id passed from server
