@@ -1,10 +1,7 @@
-var racePaint = racePaint || {};
+var preLoadState = {
 
-//loading the game assets
-racePaint.Preload = function () {};
-
-racePaint.Preload.prototype = {
     preload: function () {
+        
         //show logo in loading screen
         //these will add the logo onto the screen based on x/y coords.
         this.splash = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'logo');
@@ -17,7 +14,7 @@ racePaint.Preload.prototype = {
         
         this.load.sprite('redCar', 'assets/images/redcar.png', 5, 10);
         // load game assets, here we need to/can add a abunch of assets to be used in the game.
-        //this.load.image('space', 'assets/images/space.png');
+        this.load.image('space', 'assets/images/space.png');
         // this.load.image('rock', 'assets/images/rock.png');
         // this.load.spritesheet('playership', 'assets/images/player.png', 12, 12);
         // this.load.spritesheet('power', 'assets/images/power.png', 12, 12);
