@@ -17,7 +17,7 @@ racePaint.Preload.prototype = {
         
         this.load.sprite('redCar', 'assets/images/redcar.png', 5, 10);
         // load game assets, here we need to/can add a abunch of assets to be used in the game.
-        this.load.image('space', 'assets/images/space.png');
+        //this.load.image('space', 'assets/images/space.png');
         // this.load.image('rock', 'assets/images/rock.png');
         // this.load.spritesheet('playership', 'assets/images/player.png', 12, 12);
         // this.load.spritesheet('power', 'assets/images/power.png', 12, 12);
@@ -26,6 +26,6 @@ racePaint.Preload.prototype = {
         // this.load.audio('explosion', 'assets/audio/explosion.ogg');
     },
     create: function () {
-        this.state.start('MainMenu', Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
+        this.state.start('MainMenu')//, Phaser.Plugin.StateTransition.Out.SlideLeft, Phaser.Plugin.StateTransition.In.SlideLeft);
     }
 };
