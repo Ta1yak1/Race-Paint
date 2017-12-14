@@ -28,7 +28,7 @@ server.lastPlayerY = 200;
 io.on('connection', function (socket) {
     //handling new connection
 
-    socket.on('newPlayer', function () {
+    socket.on('newPlayerConnect', function () {
         console.log('newplayer on server');
         socket.player = {
             id: server.lastPlayerID++,
@@ -37,10 +37,10 @@ io.on('connection', function (socket) {
             key_input: null,
             rotating: false
         };
-        
-        socket.emit('allPlayers', getAllPlayers()); //sends message to new client updating them with existing clients
-        socket.broadcast.emit('newPlayer', socket.player); //sends message to all clients minus existing updating about new client
 
+        socket.emit('addSelf', socket.player);
+        socket.emit('addOthers', getOthers());
+        socket.broadcast.emit('newPlayer', socket.player); //sends message to all clients minus existing updating about new client
 
 
         //handling disconnects
@@ -50,28 +50,28 @@ io.on('connection', function (socket) {
 
     });
     socket.on('upKey', function () {
-        io.emit('moveUp', socket.player)
+        socket.broadcast.emit('moveUp',socket.player)
     });
 
     socket.on('downKey', function () {
-        io.emit('moveDown', socket.player)
+        socket.broadcast.emit('moveDown', socket.player)
     });
 
     socket.on('leftKey', function () {
         socket.player.rotating = true;
-        io.emit('moveLeft', socket.player)
+        socket.broadcast.emit('moveLeft', socket.player)
     });
 
     socket.on('rightKey', function () {
         socket.player.rotating = true;
         
-        io.emit('moveRight', socket.player)
+        socket.broadcast.emit('moveRight', socket.player)
     });
 
     socket.on('noneClick', function () {
         if (socket.player.rotating) {
             socket.player.rotating = false;
-            io.emit('moveNone', socket.player)
+            socket.broadcast.emit('moveNone', socket.player)
         }
 
     });
@@ -88,6 +88,21 @@ function getAllPlayers() {
             players.push(player);
         }
     })
+    return players;
+}
+
+function getOthers() {
+    var players = [];
+    Object.keys(io.sockets.connected).forEach(function (socketID) {
+        var player = io.sockets.connected[socketID].player;
+        if (player) {
+            players.push(player);
+        }
+    })
+    if(players.length <2){
+        return [];
+    }
+    players.slice(0,players.length-2)
     return players;
 }
 
