@@ -15,7 +15,7 @@ racePaint.Preload.prototype = {
 
         this.load.setPreloadSprite(this.preloadBar);
         
-        this.load.sprite('redCar', 'assets/images/redcar.png');
+        this.load.sprite('redCar', 'assets/images/redcar.png', 5, 10);
         // load game assets, here we need to/can add a abunch of assets to be used in the game.
         this.load.image('space', 'assets/images/space.png');
         // this.load.image('rock', 'assets/images/rock.png');
