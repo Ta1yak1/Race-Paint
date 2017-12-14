@@ -14,14 +14,17 @@ racePaint.Game.prototype = {
         this.player.scale.setTo(1.5);
 
 
+        var bmd = game.make.bitmapData(this.game.width, this.game.height)
+        bmd.context.fillStyle = '#ffffff';
+
         //TODO set the animation for the car moving, I can't remember what it was.
         //something along the lines of
         //this.player.animations.add('drive',[1], 1, true);
         //this.player.animations.play('drive');
 
         //set collision with the world border, world might be larger than our tilemap currently
-        this.game.physics.P2JS.enable(this.player);
-        
+        this.game.physics.p2.enable(this.player);
+
         this.playerSpeed = 50;
 
         this.player.body.collideWorldBounds = true;
