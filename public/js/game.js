@@ -15,10 +15,18 @@ racePaint.Game.prototype = {
 
         
         //TODO set the animation for the car moving, I can't remember what it was.
-       
+       //something along the lines of
+       //this.player.animations.add('drive',[1], 1, true);
+       //this.player.animations.play('drive');
+        
+        //set collision with the world border, world might be larger than our tilemap currently
+        this.game.physics.P2JS.enable(this.player);
         this.playerSpeed = 50;
-        //set collision with the world border, might be larger than our tilemap currently
         this.player.body.collideWorldBounds = true;
     },
-    update: function () {},
+    update: function () {
+        if(this.game.input.activePointer.justPressed()){
+            this.game.physics.P2JS
+        }
+    },
 };
