@@ -49,13 +49,13 @@ var Game = {
 
         layer = map.create('testlevel', window.innerWidth, window.innerHeight, 32, 32);
 
-        map.setCollisionByExclusion([0]);
+        // map.setCollisionByExclusion([0]);
 
-        for (var bodyIndex = 0; bodyIndex < map.layer.bodies.length; bodyIndex++) {
-            var tileBody = map.layer.bodies[bodyIndex];
-            tileBody.setCollisionGroup(tilesCollisionGroup);
-            tileBody.collides([playerCollisionGroup]);
-        }
+        // for (var bodyIndex = 0; bodyIndex < map.layer.bodies.length; bodyIndex++) {
+        //     var tileBody = map.layer.bodies[bodyIndex];
+        //     tileBody.setCollisionGroup(tilesCollisionGroup);
+        //     tileBody.collides([playerCollisionGroup]);
+        // }
 
         bmdDest.copy();
         bmdDest.addToWorld();
@@ -93,12 +93,14 @@ var Game = {
 
 
 
-        tilesCollisionGroup = this.physics.p2.createCollisionGroup();
+        // tilesCollisionGroup = this.physics.p2.createCollisionGroup();
 
-        var playerCollisionGroup = this.physics.p2.createCollisionGroup();
-        this.physics.p2.updateBoundsCollisionGroup();
+        // var playerCollisionGroup = this.physics.p2.createCollisionGroup();
+        // this.physics.p2.updateBoundsCollisionGroup();
         
         cursors = this.input.keyboard.createCursorKeys();
+
+        setInterval(Client.updateMe, 1000);
     },
 
 
@@ -126,8 +128,8 @@ var Game = {
             }
 
             /*Set X and Y Speed of Velocity*/
-            player.body.velocity.x = velocity * Math.cos((player.angle - 90) * 0.01745);
-            player.body.velocity.y = velocity * Math.sin((player.angle - 90) * 0.01745);
+            player.body.velocity.x = velocity * Math.cos((player.body.angle - 90) * 0.01745);
+            player.body.velocity.y = velocity * Math.sin((player.body.angle - 90) * 0.01745);
 
             /*Rotation of player*/
             if (cursors.left.isDown) {
@@ -145,7 +147,7 @@ var Game = {
             else {
                 player.body.angularVelocity = 0;
             }
-            player.body.collides(tilesCollisionGroup);
+            //player.body.collides(tilesCollisionGroup);
         };
     },
 
@@ -193,6 +195,7 @@ Game.pressNone = function (id) {
     player = Game.playerMap[id];
     player.body.setZeroRotation();
     player.body.angularVelocity = 0;
+    player.body.velocity = 0;
     paint(player.body.x,player.body.y);
 }
 Game.pressLeft = function (id) {
