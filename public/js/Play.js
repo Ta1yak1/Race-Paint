@@ -1,10 +1,8 @@
 var playState = {
-   
-    create: function () {
+    create: function() {
         this.player = this.add.sprite(16, 16, 'redCar');
         this.keyboard = this.input.keyboard;
         this.physics.enable(this.player, Phaser.Physics.P2JS);
-
     },
     update: function () {
         bmdDest.fill(0, 0, 0, 0);
@@ -44,4 +42,4 @@ var playState = {
             emitter.start(false, 500, 20, 20, 20);
         }
     }
-};
+}
