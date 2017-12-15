@@ -3,3 +3,5 @@ phaser-ce/
 .DS_Store
 yarn.lock
 package-lock.json
+
+app/public/index\.html
