@@ -28,19 +28,21 @@ server.lastPlayerY = 200;
 io.on('connection', function (socket) {
     //handling new connection
 
-    socket.on('newPlayer', function () {
+    socket.on('newPlayerConnect', function () {
         console.log('newplayer on server');
+        // var id = server.lastPlayerID++;
+        // var x = server.lastPlayerX+=100;
+        // var y = server.lastPlayerY
         socket.player = {
             id: server.lastPlayerID++,
             x: server.lastPlayerX += 100,
             y: server.lastPlayerY,
-            key_input: null,
             rotating: false
         };
-        
-        socket.emit('allPlayers', getAllPlayers()); //sends message to new client updating them with existing clients
-        socket.broadcast.emit('newPlayer', socket.player); //sends message to all clients minus existing updating about new client
 
+        socket.emit('addSelf', socket.player.id, socket.player.x, socket.player.y);
+        socket.emit('addOthers', getOthers(socket.player.id)); //Add other existing cars to client's list
+        socket.broadcast.emit('newPlayer', socket.player.id,socket.player.x,socket.player.y); //sends message to all clients minus existing updating about new client
 
 
         //handling disconnects
@@ -49,29 +51,45 @@ io.on('connection', function (socket) {
         });
 
     });
+    socket.on('update_Me', function (id, x, y) {
+        if(server.lastPlayerID >1){
+        socket.broadcast.emit('updateMeToAll', id, x, y);
+        }
+    });
+
     socket.on('upKey', function () {
-        io.emit('moveUp', socket.player)
+        if (socket.player) {
+            socket.broadcast.emit('moveUp', socket.player)
+        }
     });
 
     socket.on('downKey', function () {
-        io.emit('moveDown', socket.player)
+        if (socket.player) {
+            socket.broadcast.emit('moveDown', socket.player)
+        }
     });
 
     socket.on('leftKey', function () {
-        socket.player.rotating = true;
-        io.emit('moveLeft', socket.player)
+        if (socket.player) {
+            socket.player.rotating = true;
+            socket.broadcast.emit('moveLeft', socket.player)
+        }
     });
 
     socket.on('rightKey', function () {
-        socket.player.rotating = true;
-        
-        io.emit('moveRight', socket.player)
+        if (socket.player) {
+            socket.player.rotating = true;
+
+            socket.broadcast.emit('moveRight', socket.player)
+        }
     });
 
     socket.on('noneClick', function () {
-        if (socket.player.rotating) {
-            socket.player.rotating = false;
-            io.emit('moveNone', socket.player)
+        if (socket.player) {
+            if (socket.player.rotating) {
+                socket.player.rotating = false;
+                socket.broadcast.emit('moveNone', socket.player)
+            }
         }
 
     });
@@ -80,11 +98,11 @@ io.on('connection', function (socket) {
     });
 });
 
-function getAllPlayers() {
+function getOthers(id) {
     var players = [];
     Object.keys(io.sockets.connected).forEach(function (socketID) {
         var player = io.sockets.connected[socketID].player;
-        if (player) {
+        if (player && player.id != id) {
             players.push(player);
         }
     })
