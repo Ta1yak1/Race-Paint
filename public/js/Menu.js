@@ -10,7 +10,7 @@ var menuState = {
         var nameLabel = this.add.text(80, 80, 'racePaint',{
             font: '50px Courier', fill: '#ffffff'
         });
-        var startLabel = this.add.text(80,220, 'to Start Game press A!',{
+        var startLabel = this.add.text(80,220, 'to Start Game press Space!',{
             font: '24px Courier', fill:'#ffffff'
         });
         var aKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);

@@ -1,4 +1,4 @@
-var racePaint = new Phaser.Game(640, 480, Phaser.AUTO, 'game');
+var racePaint = new Phaser.Game(800, 600, Phaser.CANVAS, 'game');
 //title screen
 racePaint.state.add('Boot', bootState);
 racePaint.state.add('Load', preLoadState);

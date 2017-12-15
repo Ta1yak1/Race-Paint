@@ -11,26 +11,25 @@ var layer;
 var collision;
 var tilesCollisionGroup;
 
+function paint(x, y) {
+    if (cursors.up.isDown) {
+        //  Change the 4 - the width of the pen, to anything you like
+        bmd.circle(x, y, 10, colors[i].rgba);
+
+        i = this.math.wrapValue(i, 1, 359);
+    }
+}
+
 var playState = {
-
-
 
     create: function () {
 
-        function paint(x, y) {
-            if (cursors.up.isDown) {
-                //  Change the 4 - the width of the pen, to anything you like
-                bmd.circle(x, y, 10, colors[i].rgba);
-
-                i = this.math.wrapValue(i, 1, 359);
-            }
-        }
         //bitmap data
         colors = Phaser.Color.HSVColorWheel();
 
         map = this.add.tilemap();
 
-        bmdDest = this.make.bitmapData(32 * 25, 32 * 20);
+        bmdDest = this.make.bitmapData(800, 600);
 
         layer = map.create('testlevel', window.innerWidth, window.innerHeight, 32, 32);
 
@@ -61,8 +60,8 @@ var playState = {
 
         emitter.makeParticles('logo');
         emitter.lifespan = 5;
-        emitter.scale.x = 0.05;
-        emitter.scale.y = 0.05;
+        emitter.scale.x = 0.5;
+        emitter.scale.y = 0.5;
 
         function particleBurst() {
             emitter.start(false, 500, 20, 20, 20);
@@ -97,14 +96,7 @@ var playState = {
         function particleBurst() {
             emitter.start(false, 500, 20, 20, 20);
         }
-        function paint(x, y) {
-            if (cursors.up.isDown) {
-                //  Change the 4 - the width of the pen, to anything you like
-                bmd.circle(x, y, 10, colors[i].rgba);
 
-                i = this.math.wrapValue(i, 1, 359);
-            }
-        }
 
         bmdDest.fill(0, 0, 0, 0);
         bmdDest.copy(bmd, 0, 0);
@@ -116,7 +108,6 @@ var playState = {
 
         if (cursors.up.isDown && velocity <= 400) {
             velocity += 7;
-            paint();
         }
         else {
             if (velocity >= 7)
