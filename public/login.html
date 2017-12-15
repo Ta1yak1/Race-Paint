@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Race Paint Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="jumbotron">
+
+
+            <h3 class="text-center"><img src="./img/titlecar.png" align="middle" height="100" width="400"></h3>
+
+            <h3 class="text-center">Race Paint!..... Enter your name and nickname to start!</h3>
+            <br>
+            <form role="form">
+
+                <div class="form-group">
+                    <label for="reserve-name">Name</label>
+                    <input type="text" class="form-control" id="name">
+                </div>
+
+                <div class="form-group">
+                    <label for="reserve-phone">Nick Name</label>
+                    <input type="text" class="form-control" id="nickname">
+                </div>
+
+                <div class="text-center">
+
+                    <a href="./index.html"><button id="button" class="btn btn-lg btn-danger"><span class="glyphicon glyphicon-credit-card"></span> Register!</button></a>
+                </div>
+            </form>
+            <div class="text-center" id="playsection">
+            </div>
+        </div>
+
+        <div id="userlist"></div>
+    </div>
+
+    <script type="text/javascript">
+        $("#button").on("click", function(event) {
+
+            event.preventDefault();
+
+            var validinput = true;
+
+            if (!($("#name").val().trim()) || !($("#nickname").val().trim())) {
+                alert('Please enter both fields.');
+                validinput = false;
+            };
+
+            if (validinput) {
+                var player = {
+                    playername: $("#name").val().trim(),
+                    nickname: $("#nickname").val().trim()
+                };
+
+
+                $.post("/api/register", player, function(data) {
+                    $("#userlist").text('');
+                    // If a table is available... tell user they are booked.
+                    if (data) {
+
+                        var currentURL = window.location.origin;
+                        // location.reload();
+                        var jsondata = JSON.parse(data);
+                        console.log(jsondata);
+
+                        $("#userlist").append('<h3 align="center"> User List</h3><hr> <h4> Name ,       Nickname <h4><hr>');
+                        for (var i = 0; i < jsondata.length; i++) {
+                            $("#userlist").append(jsondata[i].playername + ' , ' + jsondata[i].nickname + '<br>');
+                        }
+
+                    };
+                });
+                alert('User has been added. Click start button to play.');
+                $("#playsection").append(
+                    "<a href='./index.html'><button class='btn btn-lg btn-danger'><span class='glyphicon glyphicon-credit-card'></span> Play!</button></a>"
+                );
+            }
+        });
+    </script>
+
+</body>
+
+</html>
