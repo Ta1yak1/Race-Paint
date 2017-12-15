@@ -9,11 +9,11 @@ Client.askNewPlayer = function () {
 };
 
 Client.updateMe = function () {
-   
+    if (Game.self){
+        
         Client.socket.emit('update_Me', Game.self.id, 
-        Game.self.sprite.x, Game.self.sprite.y)
-    
-    
+        Game.self.sprite.x, Game.self.sprite.y, Game.self.sprite.angle)
+    }
 };
 
 //Player movement---------------------------------------------------
@@ -49,8 +49,8 @@ Client.socket.on('otherPlayer', function (id,x,y) {
     Game.addOtherPlayer(id,x,y);
 });
 
-Client.socket.on('updateMeToAll', function (id,x,y) {
-    Game.updateOthers(id,x,y);
+Client.socket.on('updateMeToAll', function (id,x,y, angle) {
+    Game.updateOthers(id,x,y, angle);
 });
 
 Client.socket.on('addAllOthers', function(data){

@@ -36,6 +36,7 @@ io.on('connection', function (socket) {
 
         //socket.emit sends message to sender-client 
         // and passes additional information through parameters
+        console.log('adding Self : '+socket.player.id)
         socket.emit('addSelf', socket.player.id, 
             socket.player.x, socket.player.y);
 
@@ -53,9 +54,9 @@ io.on('connection', function (socket) {
 
     });
     //Server emits sender-client's coordinates to all other clients
-    socket.on('update_Me', function (id, x, y) {
+    socket.on('update_Me', function (id, x, y, angle) {
         if(server.lastPlayerID >1){
-        socket.broadcast.emit('updateMeToAll', id, x, y);
+        socket.broadcast.emit('updateMeToAll', id, x, y, angle);
         }
     });
 
