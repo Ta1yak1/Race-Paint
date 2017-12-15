@@ -1,70 +1,117 @@
+//Requiring necessary Packages=====================================
 var express = require('express');
 var app = express();
-
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
-var bodyParser = require('body-parser');
 
-
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.text());
-
+//Accessable public folder
 app.use(express.static("public"));
 
-var app = express();
+//
 var PORT = process.env.PORT || 8080;
-
 
 require('./routes/html-routes.js')(app);
 
-
-//keeping track of players
+//Used to give values to new connecting Players
 server.lastPlayerID = 0;
-server.lastPlayerX = 200;
+server.lastPlayerX = 0;
 server.lastPlayerY = 200;
 
 
 // Starts the server to begin listening
 // =============================================================
+
 io.on('connection', function (socket) {
-    //handling new connection
-    socket.on('newPlayer', function () {
+
+    //On recieving a client's emit 'newPlayerConnect', run callback
+    socket.on('newPlayerConnect', function () {
+        console.log('New Player connected to server');
+      
         socket.player = {
             id: server.lastPlayerID++,
-            x: server.lastPlayerX += 200,
-            y: server.lastPlayerY
+            x: server.lastPlayerX += 100,
+            y: server.lastPlayerY,
+            rotating: false
         };
-        socket.emit('allPlayer', getAllPlayers()); //sends message to new client updating them with existing clients
-        socket.broadcast.emit('newPlayer', socket.player); //sends message to all clients minus existing updating about new client
 
-        //handling inputs
-        socket.on('click', function (data) {
-            console.log('click to ' + data.x + ', ' + data.y);
-            socket.player.x = data.x;
-            socket.player.y = data.y;
-            io.emit('move', socket.player);
-        });
+        //socket.emit sends message to sender-client 
+        // and passes additional information through parameters
+        socket.emit('addSelf', socket.player.id, 
+            socket.player.x, socket.player.y);
 
-        //handling disconnects
+        socket.emit('addAllOthers', getOthers(socket.player.id)); 
+
+        //socket.broadcast.emit specifically emits to all OTHER 
+        //connected clients that isn't the sender-client
+        socket.broadcast.emit('otherPlayer', socket.player.id,
+            socket.player.x,socket.player.y); 
+
+        //io.emit emits message to ALL clients
         socket.on('disconnect', function () {
             io.emit('remove', socket.player.id);
         });
+
     });
+    //Server emits sender-client's coordinates to all other clients
+    socket.on('update_Me', function (id, x, y) {
+        if(server.lastPlayerID >1){
+        socket.broadcast.emit('updateMeToAll', id, x, y);
+        }
+    });
+
+    //Server emitting sender-client's movements to all other clients--------
+    socket.on('upKey', function () {
+        if (socket.player) {
+            socket.broadcast.emit('moveUp', socket.player)
+        }
+    });
+
+    socket.on('downKey', function () {
+        if (socket.player) {
+            socket.broadcast.emit('moveDown', socket.player)
+        }
+    });
+
+    socket.on('leftKey', function () {
+        if (socket.player) {
+            socket.player.rotating = true;
+            socket.broadcast.emit('moveLeft', socket.player)
+        }
+    });
+
+    socket.on('rightKey', function () {
+        if (socket.player) {
+            socket.player.rotating = true;
+            socket.broadcast.emit('moveRight', socket.player)
+        }
+    });
+
+    socket.on('noneClick', function () {
+        if (socket.player) {
+            if (socket.player.rotating) {
+                socket.player.rotating = false;
+                socket.broadcast.emit('moveNone', socket.player)
+            }
+        }
+
+    });
+    //-----------------------------------------------------------------------
+    
 });
 
-function getAllPlayers() {
+//Returns list of clients minus player with given id, based on connection to server
+function getOthers(id) {
     var players = [];
-    Objects.keys(io.sockets.connected).forEach(function (socketID) {
+    Object.keys(io.sockets.connected).forEach(function (socketID) {
         var player = io.sockets.connected[socketID].player;
-        if (player) {
+        if (player && player.id != id) {
             players.push(player);
         }
     })
     return players;
 }
 
+//Connecting to Port
 server.listen(PORT, function () {
     console.log('Running on Port ' + PORT + '...');
 });
