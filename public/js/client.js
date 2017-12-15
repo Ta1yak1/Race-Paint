@@ -9,8 +9,11 @@ Client.askNewPlayer = function () {
 };
 
 Client.updateMe = function () {
-    Client.socket.emit('update_Me', Game.self.id, 
+   
+        Client.socket.emit('update_Me', Game.self.id, 
         Game.self.sprite.x, Game.self.sprite.y)
+    
+    
 };
 
 //Player movement---------------------------------------------------
