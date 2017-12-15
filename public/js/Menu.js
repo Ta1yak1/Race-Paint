@@ -13,7 +13,7 @@ var menuState = {
         var startLabel = this.add.text(80,220, 'to Start Game press A!',{
             font: '24px Courier', fill:'#ffffff'
         });
-        var aKey = this.input.keyboard.addKey(Phaser.Keyboard.W);
+        var aKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         aKey.onDown.addOnce(this.start, this);    
     },
        

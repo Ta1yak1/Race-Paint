@@ -22,5 +22,6 @@ var preLoadState = {
         // this.load.setPreloadSprite(this.preloadBar);
     },
     create: function () {
+
         this.state.start('Menu')  }
 };
