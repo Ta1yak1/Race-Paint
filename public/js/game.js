@@ -1,19 +1,16 @@
-
-//Setting up game
+//Setting up game Canvas
 var game = new Phaser.Game(16 * 32, 600, Phaser.AUTO, document.getElementById('game'));
 
-
+var UPDATE_TIC_RATE = 10;
 var Game = {};
-
 var selfCreated = false;
 
-//
 Game.init = function () {
     game.stage.disableVisibilityChange = true;
 };
 
 
-//Preload tiles, sprites
+//Phaser's Preload:  tiles, sprites
 //TODO change all file pathings for sprites
 Game.preload = function () {
     // game.load.tilemap('map', 'assets/map/example_map.json', null, Phaser.Tilemap.TILED_JSON);
@@ -25,20 +22,20 @@ Game.preload = function () {
 
 //create game and setup visuals
 Game.create = function () {
+    //Used to identify server to it's own Car
     Game.self;
-    Game.playerMap = {}; //Used to keep track of players 
-
+    //Used to track cars of other players
+    Game.playerMap = {}; 
     game.physics.startSystem(Phaser.Physics.P2JS);
 
+    //Setting up keyboard arrowKey controls
     keyInput = game.input.keyboard.createCursorKeys();
 
+    //Client emits message to server that they are attempting to connect
     Client.askNewPlayer(); //client notifies server new player
-    isGame = true;
 
-
-    setInterval(Client.updateMe, 10);
-
-
+    //Updating other players of this player's position
+    setInterval(Client.updateMe, UPDATE_TIC_RATE);
 };
 
 //game updates
@@ -54,7 +51,6 @@ Game.update = function () {
             MyCar.rotateRight(100);
             Client.sendRight();
         }
-        //SERVER BREAKS WHEN SENDSTILL FOR SOME REASON
         else {
             if (MyCar) {
                 MyCar.setZeroRotation();
@@ -72,16 +68,7 @@ Game.update = function () {
     }
 }
 
-
-
-//add player
-Game.addNewPlayer = function (id, x, y) {
-    Game.playerMap[id] = game.add.sprite(x, y, 'car');
-    game.physics.p2.enable(Game.playerMap[id]);
-    game.physics.p2.setBoundsToWorld(true, true, true, true, false);
-
-};
-
+//adding player object to have client self identify to
 Game.addSelf = function (id, x, y) {
     Game.self = {
         sprite: game.add.sprite(x, y, 'car'),
@@ -91,12 +78,21 @@ Game.addSelf = function (id, x, y) {
     game.physics.p2.setBoundsToWorld(true, true, true, true, false);
     selfCreated = true;
 }
-//remove player 
+//adding other players to seperate trackable list
+Game.addOtherPlayer = function (id, x, y) {
+    Game.playerMap[id] = game.add.sprite(x, y, 'car');
+    game.physics.p2.enable(Game.playerMap[id]);
+    game.physics.p2.setBoundsToWorld(true, true, true, true, false);
+
+};
+
+//remove player by id
 Game.removePlayer = function (id) {
     Game.playerMap[id].destroy();
     delete Game.playerMap[id];
 };
 
+//Player Mobility methods=====================
 Game.pressUp = function (id) {
     player = Game.playerMap[id];
     player.body.thrust(300);
@@ -120,6 +116,7 @@ Game.pressRight = function (id) {
     player = Game.playerMap[id];
     player.body.rotateRight(100);
 }
+//==============================================
 
 Game.updateOthers = function (id, x, y) {
     console.log('updating other sprites..');
@@ -131,6 +128,6 @@ Game.updateOthers = function (id, x, y) {
 
 }
 
-
+//Loading in our Game state into canvas
 game.state.add('Game', Game);
 game.state.start('Game');
