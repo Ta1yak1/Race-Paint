@@ -1,29 +1,29 @@
 
 var Client = {};
-Client.socket = io.connect('http://localhost:8080');
+Client.socket = io.connect();
 
 Client.askNewPlayer = function () {
-    Client.socket.emit('newPlayer');
+    Client.socket.emit('newPlayerConnect');
     console.log('askNewPlayer');
 }
+
+Client.socket.on('addSelf', function(id,x,y){
+    Game.addSelf(id,x,y);
+});
+
+Client.socket.on('addOthers', function(data){
+    for (var i = 0; i < data.length; i++){
+        Game.addNewPlayer(data[i].id, data[i].x, data[i].y);
+    }
+});
 
 Client.sendTest = function () {
     console.log('test sent from client.js');
     Client.socket.emit('test');
 }
 //take data from server and create Client newPlayer
-Client.socket.on('newPlayer', function (player) {
-    Game.addNewPlayer(player.id, player.x, player.y);
-    console.log('adding new player');
-});
-
-//add all players for client
-Client.socket.on('allPlayers', function (data) {
-    console.log('client allplayers')
-    console.log(data);
-    for (var i = 0; i < data.length; i++) {
-        Game.addNewPlayer(data[i].id, data[i].x, data[i].y);
-    }
+Client.socket.on('newPlayer', function (id,x,y) {
+    Game.addNewPlayer(id,x,y);
 });
 
 //delete player based on id passed from server
@@ -68,3 +68,10 @@ Client.sendStill = function () {
 }
 
 
+Client.updateMe = function () {
+    Client.socket.emit('update_Me', Game.self.id, Game.self.sprite.x, Game.self.sprite.y)
+}
+
+Client.socket.on('updateMeToAll', function (id,x,y) {
+    Game.updateOthers(id,x,y);
+})
