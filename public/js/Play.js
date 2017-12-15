@@ -12,12 +12,8 @@ var collision;
 var tilesCollisionGroup;
 
 function paint(x, y) {
-    if (cursors.up.isDown) {
-        //  Change the 4 - the width of the pen, to anything you like
-        bmd.circle(x, y, 10, colors[i].rgba);
-
-        i = this.math.wrapValue(i, 1, 359);
-    }
+    colors = Phaser.Color.HSVColorWheel();
+    bmd.circle(x, y, 10, colors[i].rgba);
 }
 
 var playState = {
@@ -25,11 +21,10 @@ var playState = {
     create: function () {
 
         //bitmap data
-        colors = Phaser.Color.HSVColorWheel();
 
         map = this.add.tilemap();
 
-        bmdDest = this.make.bitmapData(800, 600);
+        bmdDest = this.make.bitmapData(32 * 25, 32 * 20);
 
         layer = map.create('testlevel', window.innerWidth, window.innerHeight, 32, 32);
 
@@ -44,7 +39,7 @@ var playState = {
         bmdDest.copy();
         bmdDest.addToWorld();
 
-        bmd = this.make.bitmapData(this.width, this.height);
+        bmd = this.make.bitmapData(800, 600);
         bmd.context.fillStyle = "#ffffff";
 
 
@@ -107,11 +102,12 @@ var playState = {
         explode.onDown.add(particleBurst, this);
 
         if (cursors.up.isDown && velocity <= 400) {
-            velocity += 7;
+            velocity += 10;
+            paint();
         }
         else {
             if (velocity >= 7)
-                velocity -= 7;
+                velocity -= 10;
         }
 
         /*Set X and Y Speed of Velocity*/
