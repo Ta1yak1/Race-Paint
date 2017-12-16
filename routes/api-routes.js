@@ -4,18 +4,12 @@ var mysql = require('mysql');
 
 module.exports = function(app) {
 
-    app.get("/api/get", function(req, res) {
-        console.log(path.join(__dirname, '../public/index.html'));
-
+    app.get("/api/index.html", function(req, res) {
         res.sendFile(path.join(__dirname, '../public/index.html'))
     })
 
 
     app.post("/api/register", function(req, res) {
-        console.log(req.body);
-
-        //    res.sendFile(path.join(__dirname, '../public/index.html'))
-
 
         var connection = mysql.createPool({
             connectionLimit: 10,
@@ -27,12 +21,8 @@ module.exports = function(app) {
 
         connection.getConnection(function(err, connec) {
             console.log("connected as id " + connection.threadId);
-
         });
 
-
-        console.log(req.body.playername);
-        console.log(req.body.nickname);
         connection.query("insert into users (playername, nickname) values (\'" + req.body.playername + "\',\'" + req.body.nickname + "\')", function(err, res1) {
             if (err) throw err;
 
