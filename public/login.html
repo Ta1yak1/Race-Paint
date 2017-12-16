@@ -16,7 +16,9 @@
         <div class="jumbotron">
 
 
-            <h3 class="text-center"><img src="./img/titlecar.png" align="middle" height="100" width="400"></h3>
+            <h3 class="text-center">
+                <img src="./img/titlecar.png" align="middle" height="100" width="400">
+            </h3>
 
             <h3 class="text-center">Race Paint!..... Enter your name and nickname to start!</h3>
             <br>
@@ -34,7 +36,10 @@
 
                 <div class="text-center">
 
-                    <a href="./index.html"><button id="button" class="btn btn-lg btn-danger"><span class="glyphicon glyphicon-credit-card"></span> Register!</button></a>
+                    <a href="./index.html">
+                        <button id="button" class="btn btn-lg btn-danger">
+                            <span class="glyphicon glyphicon-credit-card"></span> Register!</button>
+                    </a>
                 </div>
             </form>
             <div class="text-center" id="playsection">
@@ -45,7 +50,10 @@
     </div>
 
     <script type="text/javascript">
-        $("#button").on("click", function(event) {
+        $("#playsection").append(
+            "<a href='./index.html'><button class='btn btn-lg btn-danger'><span class='glyphicon glyphicon-credit-card'></span> Play!</button></a>"
+        );
+        $("#button").on("click", function (event) {
 
             event.preventDefault();
 
@@ -63,7 +71,7 @@
                 };
 
 
-                $.post("/api/register", player, function(data) {
+                $.post("/api/register", player, function (data) {
                     $("#userlist").text('');
                     // If a table is available... tell user they are booked.
                     if (data) {
@@ -81,9 +89,7 @@
                     };
                 });
                 alert('User has been added. Click start button to play.');
-                $("#playsection").append(
-                    "<a href='./index.html'><button class='btn btn-lg btn-danger'><span class='glyphicon glyphicon-credit-card'></span> Play!</button></a>"
-                );
+
             }
         });
     </script>
