@@ -1,16 +1,21 @@
 //Requiring necessary Packages=====================================
 var express = require('express');
 var app = express();
+var mysql = require('mysql');
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
+var bodyParser = require('body-parser');
 
-//Accessable public folder
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.text());
+
 app.use(express.static("public"));
 
-//
 var PORT = process.env.PORT || 8080;
 
 require('./routes/html-routes.js')(app);
+require('./routes/api-routes.js')(app);
 
 //Used to give values to new connecting Players
 server.lastPlayerID = 0;
@@ -36,7 +41,6 @@ io.on('connection', function (socket) {
 
         //socket.emit sends message to sender-client 
         // and passes additional information through parameters
-        console.log('adding Self : '+socket.player.id)
         socket.emit('addSelf', socket.player.id, 
             socket.player.x, socket.player.y);
 
@@ -54,9 +58,9 @@ io.on('connection', function (socket) {
 
     });
     //Server emits sender-client's coordinates to all other clients
-    socket.on('update_Me', function (id, x, y, angle) {
+    socket.on('update_Me', function (id, x, y) {
         if(server.lastPlayerID >1){
-        socket.broadcast.emit('updateMeToAll', id, x, y, angle);
+        socket.broadcast.emit('updateMeToAll', id, x, y);
         }
     });
 

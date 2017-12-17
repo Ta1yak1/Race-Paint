@@ -9,8 +9,6 @@ var bmdDest;
 var bmd;
 var map;
 
-
-
 Game.init = function () {
     game.stage.disableVisibilityChange = true;
 };
@@ -19,6 +17,10 @@ Game.init = function () {
 //Phaser's Preload:  tiles, sprites
 //TODO change all file pathings for sprites
 Game.preload = function () {
+    // game.load.tilemap('map', 'assets/map/example_map.json', null, Phaser.Tilemap.TILED_JSON);
+    // game.load.spritesheet('tileset', 'assets/map/tilesheet.png', 32, 32);
+    // game.load.image('sprite', 'assets/sprites/sprite.png'); // this will be the sprite of the players
+    game.load.image('diamond', '../img/diamond.png');
     game.load.image('car', '../img/redcar.png');
 };
 
@@ -65,17 +67,16 @@ Game.update = function () {
         
         Game.paint(MyCar.x,MyCar.y);
 
-        
         if (keyInput.left.isDown) {
             MyCar.rotateLeft(100);
             Client.sendLeft();
-        }
+            
 
+        }
         else if (keyInput.right.isDown) {
             MyCar.rotateRight(100);
             Client.sendRight();
         }
-
         else {
             if (MyCar) {
                 MyCar.setZeroRotation();
@@ -84,6 +85,7 @@ Game.update = function () {
         }
         if (keyInput.up.isDown) {
             MyCar.thrust(300);
+            
             Client.sendUp();
         }
         else if (keyInput.down.isDown) {
@@ -97,7 +99,8 @@ Game.update = function () {
 Game.addSelf = function (id, x, y) {
     Game.self = {
         sprite: game.add.sprite(x, y, 'car'),
-        id: id
+        id: id,
+        create: true
     };
     game.physics.p2.enable(Game.self.sprite);
     game.physics.p2.setBoundsToWorld(true, true, true, true, false);
@@ -105,7 +108,7 @@ Game.addSelf = function (id, x, y) {
 }
 //adding other players to seperate trackable list
 Game.addOtherPlayer = function (id, x, y) {
-    Game.playerMap[id] = game.add.sprite(x, y, 'car')
+    Game.playerMap[id] = game.add.sprite(x, y, 'car');
     game.physics.p2.enable(Game.playerMap[id]);
     game.physics.p2.setBoundsToWorld(true, true, true, true, false);
 
@@ -148,13 +151,12 @@ Game.pressRight = function (id) {
 }
 //==============================================
 
-Game.updateOthers = function (id, x, y, angle) {
+Game.updateOthers = function (id, x, y) {
     console.log('updating other sprites..');
     player = Game.playerMap[id];
     if (player) {
         player.body.x = x;
         player.body.y = y;
-        player.body.angle = angle
         Game.paint(player.body.x, player.body.y);        
     }
 }

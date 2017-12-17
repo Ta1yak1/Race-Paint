@@ -1,11 +1,14 @@
 var express = require('express');
 var path = require('path');
 
-module.exports = function(app){
+module.exports = function (app) {
 
-    app.get("/", function(req,res){
-        console.log('app.get /');
- 
-        res.sendFile(path.join(__dirname,'../public/index.html'))
+    app.get("/game", function (req, res) {
+        res.sendFile(path.join(__dirname, '../public/game.html'))
     })
+
+    app.get("/index", function (req, res) {
+        res.sendFile(path.join(__dirname, '../public/index.html'))
+    })
+
 }
