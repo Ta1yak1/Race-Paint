@@ -2,17 +2,28 @@ var express = require('express');
 var path = require('path');
 var mysql = require('mysql');
 
-module.exports = function(app) {
+module.exports = function (app) {
 
-    app.get("/api/get", function(req, res) {
+    app.get("/api/get", function (req, res) {
 
         console.log(path.join(__dirname, '../public/game.html'));
-        
+
         res.sendFile(path.join(__dirname, '../public/game.html'))
     })
+    app.get("/api/get", function (req, res) {
 
+        console.log(path.join(__dirname, '../public/yellowcar.html'));
 
-    app.post("/api/register", function(req, res) {
+        res.sendFile(path.join(__dirname, '../public/yellowcar.html'))
+    })
+    app.get("/api/get", function (req, res) {
+        
+                console.log(path.join(__dirname, '../public/bluecar.html'));
+        
+                res.sendFile(path.join(__dirname, '../public/bluecar.html'))
+            })
+
+    app.post("/api/register", function (req, res) {
 
         var connection = mysql.createPool({
             connectionLimit: 10,
@@ -22,14 +33,14 @@ module.exports = function(app) {
             database: "tymkh4euex835957"
         });
 
-        connection.getConnection(function(err, connec) {
+        connection.getConnection(function (err, connec) {
             console.log("connected as id " + connection.threadId);
         });
 
-        connection.query("insert into users (playername, nickname) values (\'" + req.body.playername + "\',\'" + req.body.nickname + "\')", function(err, res1) {
+        connection.query("insert into users (playername, nickname) values (\'" + req.body.playername + "\',\'" + req.body.nickname + "\')", function (err, res1) {
             if (err) throw err;
 
-            connection.query("select * from users", function(err, res2) {
+            connection.query("select * from users", function (err, res2) {
                 if (err) throw err;
                 console.log(res2);
                 res.json(JSON.stringify(res2));
