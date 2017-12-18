@@ -38,11 +38,11 @@ io.on('connection', function (socket) {
             y: server.lastPlayerY,
             rotating: false
         };
-
         //socket.emit sends message to sender-client 
         // and passes additional information through parameters
         socket.emit('addSelf', socket.player.id, 
             socket.player.x, socket.player.y);
+
 
         socket.emit('addAllOthers', getOthers(socket.player.id)); 
 
