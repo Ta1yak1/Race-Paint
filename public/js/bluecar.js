@@ -38,8 +38,7 @@ Game.create = function () {
     bmdDest.copy();
     bmdDest.addToWorld();
     bmd = game.make.bitmapData(1000, 800);
-    bmd = game.make.bitmapData(1000, 800);
-    bmd.context.fillStyle = "#ff0000";
+    bmd.context.fillStyle = "#0000ff";
 
     //Setting up keyboard arrowKey controls
     keyInput = game.input.keyboard.createCursorKeys();
@@ -95,7 +94,7 @@ Game.update = function () {
 //adding player object to have client self identify to
 Game.addSelf = function (id, x, y) {
     Game.self = {
-        sprite: game.add.sprite(x, y, 'car'),
+        sprite: game.add.sprite(x, y, 'bluecar'),
         id: id,
         create: true
     };
@@ -105,7 +104,7 @@ Game.addSelf = function (id, x, y) {
 }
 //adding other players to seperate trackable list
 Game.addOtherPlayer = function (id, x, y) {
-    Game.playerMap[id] = game.add.sprite(x, y, 'bluecar');
+    Game.playerMap[id] = game.add.sprite(x, y, 'car');
     game.physics.p2.enable(Game.playerMap[id]);
     game.physics.p2.setBoundsToWorld(true, true, true, true, false);
 };
@@ -163,7 +162,7 @@ Game.paint = function (x, y) {
 
 Game.paintOthers = function (x,y){
     var colors = Phaser.Color.HSVColorWheel();
-    bmd.context.fillStyle = "#ff0000";
+    bmd.context.fillStyle = "#0000ff";
     bmd.context.fillRect(x,y,5,5);
 }
 

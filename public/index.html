@@ -47,7 +47,13 @@
     <script type="text/javascript">
 
         $("#playsection").append(
-            "<br><a href='./game.html'><button class='btn btn-lg btn-danger'><span class='glyphicon glyphicon-credit-card'></span> Play!</button></a>"
+            "<hr><a href='./game.html'><button class='btn btn-lg btn-danger'><span class='glyphicon  glyphicon glyphicon-tower'></span> Play Red Car!</button></a>..."
+        );
+        $("#playsection").append(
+            "<a href='./bluecar.html'><button class='btn btn-lg btn-primary'><span class='glyphicon glyphicon glyphicon-tower'></span> Play Blue Car!</button></a>..."
+        );
+        $("#playsection").append(
+            "<a href='./yellowcar.html'><button class='btn btn-lg btn-warning'><span class='glyphicon glyphicon glyphicon-tower'></span> Play Yellow Car!</button></a>"
         );
 
         $("#button").on("click", function (event) {
@@ -69,8 +75,8 @@
 
 
                 $.post("/api/register", player, function (data) {
-                 console.log("working?123");
-                    
+                    console.log("working?123");
+
                     $("#userlist").text('');
                     // If a table is available... tell user they are booked.
                     if (data) {
@@ -91,7 +97,7 @@
             }
         });
 
-        
+
     </script>
 
 </body>
