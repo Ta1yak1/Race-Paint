@@ -4,8 +4,11 @@ var mysql = require('mysql');
 
 module.exports = function(app) {
 
-    app.get("/api/index.html", function(req, res) {
-        res.sendFile(path.join(__dirname, '../public/index.html'))
+    app.get("/api/get", function(req, res) {
+
+        console.log(path.join(__dirname, '../public/game.html'));
+        
+        res.sendFile(path.join(__dirname, '../public/game.html'))
     })
 
 
