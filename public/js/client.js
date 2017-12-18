@@ -5,15 +5,11 @@ Client.socket = io.connect();
 
 Client.askNewPlayer = function () {
     Client.socket.emit('newPlayerConnect');
-    console.log('New Player Connected');
 };
 
 Client.updateMe = function () {
-   
-        Client.socket.emit('update_Me', Game.self.id, 
+    Client.socket.emit('update_Me', Game.self.id,
         Game.self.sprite.x, Game.self.sprite.y)
-    
-    
 };
 
 //Player movement---------------------------------------------------
@@ -41,21 +37,21 @@ Client.sendStill = function () {
 
 
 //Listens for emits from server =====================================
-Client.socket.on('addSelf', function(id,x,y){
-    Game.addSelf(id,x,y);
+Client.socket.on('addSelf', function (id, x, y) {
+    Game.addSelf(id, x, y);
 });
 
-Client.socket.on('otherPlayer', function (id,x,y) {
-    Game.addOtherPlayer(id,x,y);
+Client.socket.on('otherPlayer', function (id, x, y) {
+    Game.addOtherPlayer(id, x, y);
 });
 
-Client.socket.on('updateMeToAll', function (id,x,y) {
-    Game.updateOthers(id,x,y);
+Client.socket.on('updateMeToAll', function (id, x, y) {
+    Game.updateOthers(id, x, y);
 });
 
-Client.socket.on('addAllOthers', function(data){
-    for (var i = 0; i < data.length; i++){
-        Game.addOtherPlayer(data[i].id, 
+Client.socket.on('addAllOthers', function (data) {
+    for (var i = 0; i < data.length; i++) {
+        Game.addOtherPlayer(data[i].id,
             data[i].x, data[i].y);
     }
 });
