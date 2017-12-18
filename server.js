@@ -4,14 +4,11 @@ var app = express();
 var mysql = require('mysql');
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
-var bodyParser = require('body-parser');
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.text());
-
+//Accessable public folder
 app.use(express.static("public"));
 
+//
 var PORT = process.env.PORT || 8080;
 
 require('./routes/html-routes.js')(app);
