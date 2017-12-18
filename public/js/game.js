@@ -13,7 +13,6 @@ Game.init = function () {
     game.stage.disableVisibilityChange = true;
 };
 
-
 //Phaser's Preload:  tiles, sprites
 //TODO change all file pathings for sprites
 Game.preload = function () {
@@ -67,8 +66,6 @@ Game.update = function () {
         if (keyInput.left.isDown) {
             MyCar.rotateLeft(100);
             Client.sendLeft();
-
-
         }
         else if (keyInput.right.isDown) {
             MyCar.rotateRight(100);
@@ -166,7 +163,6 @@ Game.paintOthers = function (x,y){
     bmd.context.fillStyle = "#ff0000";
     bmd.context.fillRect(x,y,5,5);
 }
-
 
 //Loading in our Game state into canvas
 game.state.add('Game', Game);
