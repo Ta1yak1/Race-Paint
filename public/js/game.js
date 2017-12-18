@@ -1,5 +1,5 @@
 //Setting up game Canvas
-var game = new Phaser.Game(16 * 32, 600, Phaser.AUTO, document.getElementById('game'));
+var game = new Phaser.Game(1000, 800, Phaser.AUTO, document.getElementById('game'));
 
 var UPDATE_TIC_RATE = 10;
 var Game = {};
@@ -36,11 +36,11 @@ Game.create = function () {
 
     //Adding tilemap we can draw on
     map = game.add.tilemap();
-    bmdDest = game.make.bitmapData(32 * 25, 32 * 20);
+    bmdDest = game.make.bitmapData(1000, 800);
     layer = map.create('testlevel', window.innerWidth, window.innerHeight, 32, 32);
     bmdDest.copy();
     bmdDest.addToWorld();
-    bmd = game.make.bitmapData(800, 600);
+    bmd = game.make.bitmapData(1000, 800);
     bmd.context.fillStyle = "#ffffff";
 
     //Setting up keyboard arrowKey controls
