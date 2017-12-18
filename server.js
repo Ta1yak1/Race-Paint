@@ -11,6 +11,7 @@ app.use(express.static("public"));
 var PORT = process.env.PORT || 8080;
 
 require('./routes/html-routes.js')(app);
+require('./routes/api-routes.js')(app);
 
 //Used to give values to new connecting Players
 server.lastPlayerID = 0;
