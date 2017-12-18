@@ -1,5 +1,5 @@
 //Setting up game Canvas
-var game = new Phaser.Game(800, 600, Phaser.AUTO, document.getElementById('game'));
+var game = new Phaser.Game(1000, 800, Phaser.AUTO, document.getElementById('game'));
 
 var UPDATE_TIC_RATE = 10;
 var Game = {};
@@ -8,13 +8,20 @@ var selfCreated = false;
 var bmdDest;
 var bmd;
 var map;
+var i = 0;
+var colors;
 
 Game.init = function () {
     game.stage.disableVisibilityChange = true;
 };
 
+
 //Phaser's Preload:  tiles, sprites
+//TODO change all file pathings for sprites
 Game.preload = function () {
+    // game.load.tilemap('map', 'assets/map/example_map.json', null, Phaser.Tilemap.TILED_JSON);
+    // game.load.spritesheet('tileset', 'assets/map/tilesheet.png', 32, 32);
+    // game.load.image('sprite', 'assets/sprites/sprite.png'); // this will be the sprite of the players
     game.load.image('diamond', '../img/diamond.png');
     game.load.image('car', '../img/redcar.png');
 };
@@ -27,16 +34,20 @@ Game.create = function () {
     Game.playerMap = {};
     game.physics.startSystem(Phaser.Physics.P2JS);
 
-    map = game.add.tilemap();
-    bmdDest = game.make.bitmapData(32*25,32*20);
-    layer = map.create('testlevel',window.innerWidth, window.innerHeight,32,32);
 
-    
+    map = game.add.tilemap();
+    bmdDest = game.make.bitmapData(1000, 800);
+    layer = map.create('testlevel', window.innerWidth, window.innerHeight, 32, 32);
+
+    colors = Phaser.Color.HSVColorWheel();
+
     bmdDest.copy();
     bmdDest.addToWorld();
 
-    bmd = game.make.bitmapData(800, 600);
-    bmd.context.fillStyle = "#ffffff";
+    bmd = game.make.bitmapData(1000, 800);
+    for (i = 0; i < colors.length; i++) {
+        bmd.context.fillStyle = colors[i].rgba;
+    }
 
     //Setting up keyboard arrowKey controls
     keyInput = game.input.keyboard.createCursorKeys();
@@ -47,25 +58,23 @@ Game.create = function () {
     //Updating other players of this player's position
 
     setInterval(Client.updateMe, UPDATE_TIC_RATE);
-
-
 };
 
 //game updates
 Game.update = function () {
     if (selfCreated) {
-        
+
         var MyCar = Game.self.sprite.body
         bmdDest.fill(0, 0, 0, 0);
         bmdDest.copy(bmd, 0, 0);
         bmd.dirty = true;
-        
-        Game.paint(MyCar.x,MyCar.y);
+
+        Game.paint(MyCar.x, MyCar.y);
 
         if (keyInput.left.isDown) {
             MyCar.rotateLeft(100);
             Client.sendLeft();
-            
+
 
         }
         else if (keyInput.right.isDown) {
@@ -80,7 +89,7 @@ Game.update = function () {
         }
         if (keyInput.up.isDown) {
             MyCar.thrust(300);
-            
+
             Client.sendUp();
         }
         else if (keyInput.down.isDown) {
@@ -119,30 +128,29 @@ Game.removePlayer = function (id) {
 Game.pressUp = function (id) {
     player = Game.playerMap[id];
     player.body.thrust(300);
-    
+
 
 }
 Game.pressDown = function (id) {
     player = Game.playerMap[id];
     player.body.reverse(100);
-    
+
 
 }
 Game.pressNone = function (id) {
     player = Game.playerMap[id];
     player.body.setZeroRotation();
-    
 
 }
 Game.pressLeft = function (id) {
     player = Game.playerMap[id];
     player.body.rotateLeft(100);
-    
+
 }
 Game.pressRight = function (id) {
     player = Game.playerMap[id];
     player.body.rotateRight(100);
-    
+
 }
 //==============================================
 
@@ -152,12 +160,11 @@ Game.updateOthers = function (id, x, y) {
     if (player) {
         player.body.x = x;
         player.body.y = y;
-        Game.paint(player.body.x, player.body.y);        
+        Game.paint(player.body.x, player.body.y);
     }
 }
 
 Game.paint = function (x, y) {
-    var colors = Phaser.Color.HSVColorWheel();
     bmd.context.fillRect(x, y, 5, 5)
 }
 
